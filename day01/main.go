@@ -68,16 +68,30 @@ func main() {
 		panic("Invalid input set given! - Left and right side have different lengths")
 	}
 
-	for i := 0; i < len(sortedLeftList); i++ {
-		if sortedLeftList[i] < sortedRightList[i] {
-			result += sortedRightList[i] - sortedLeftList[i]
-		} else if sortedLeftList[i] > sortedRightList[i] {
-			result += sortedLeftList[i] - sortedRightList[i]
-		} else {
-			// If the two numbers are equal, there's no need to do anything,
-			// as we would only add 0 to it.
-		}
-	}
+	// Part 1
+
+	// for i := 0; i < len(sortedLeftList); i++ {
+	// 	if sortedLeftList[i] < sortedRightList[i] {
+	// 		result += sortedRightList[i] - sortedLeftList[i]
+	// 	} else if sortedLeftList[i] > sortedRightList[i] {
+	// 		result += sortedLeftList[i] - sortedRightList[i]
+	// 	} else {
+	// 		// If the two numbers are equal, there's no need to do anything,
+	// 		// as we would only add 0 to it.
+	// 	}
+	// }
+
+	// Part 2
+
+	// for _, currentLeftNumber := range sortedLeftList {
+	// 	occurences := 0
+	// 	for _, currentRightNumber := range sortedRightList {
+	// 		if currentLeftNumber == currentRightNumber {
+	// 			occurences++
+	// 		}
+	// 	}
+	// 	result += (currentLeftNumber * occurences)
+	// }
 
 	println(result)
 }
