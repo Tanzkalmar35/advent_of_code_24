@@ -11,7 +11,7 @@ func ReadFile(filename string) []string {
 	var result []string
 
 	// Open the file
-	file, err := os.Open(filename)
+	file, err := os.Open("day02/" + filename)
 	if err != nil {
 		panic(err)
 	}
@@ -33,7 +33,71 @@ func ReadFile(filename string) []string {
 	return result
 }
 
-func isSafe(input []int) bool {
+func RemoveItem(list []int, idx int) []int {
+	// for idx, num := range list {
+	// 	println("List before contains " + strconv.Itoa(num) + " at " + strconv.Itoa(idx))
+	// }
+	// appended := append(list[:idx], list[idx+1:]...)
+	// for idx, num := range appended {
+	// 	println("List after contains " + strconv.Itoa(num) + " at " + strconv.Itoa(idx))
+	// }
+	return append(list[:idx], list[idx+1:]...)
+}
+
+// Part 1
+
+// func isSafe(input []int) bool {
+// 	lastNum := -1
+// 	// Representing the direction we're going. Either "increasing" or "decreasing".
+// 	var direction string
+//
+// 	for idx, num := range input {
+// 		if idx == 0 {
+// 			lastNum = num
+// 			continue
+// 		} else if idx == 1 {
+// 			if lastNum < num {
+// 				direction = "increasing"
+// 			} else if lastNum > num {
+// 				direction = "decreasing"
+// 			} else {
+// 				return false
+// 			}
+// 		}
+//
+// 		numDif := 0
+//
+// 		if direction == "increasing" {
+// 			numDif = num - lastNum
+// 			if lastNum >= num {
+// 				return false
+// 			}
+// 		} else if direction == "decreasing" {
+// 			numDif = lastNum - num
+// 			if lastNum <= num {
+// 				return false
+// 			}
+// 		} else {
+// 			panic("That was not supposed to happen...")
+// 		}
+//
+// 		if numDif < 1 || numDif > 3 {
+// 			return false
+// 		}
+//
+// 		lastNum = num
+// 	}
+//
+// 	return true
+// }
+
+// Part 2
+
+func abc(list []int) bool {
+	return isSafe(list, false)
+}
+
+func isSafe(input []int, hasRetry bool) bool {
 	lastNum := -1
 	// Representing the direction we're going. Either "increasing" or "decreasing".
 	var direction string
@@ -48,7 +112,13 @@ func isSafe(input []int) bool {
 			} else if lastNum > num {
 				direction = "decreasing"
 			} else {
-				return false
+				if hasRetry {
+					newList := RemoveItem(input, idx)
+					return abc(newList)
+				} else {
+					println("False as number is equal to last one - Without retry")
+					return false
+				}
 			}
 		}
 
@@ -57,19 +127,38 @@ func isSafe(input []int) bool {
 		if direction == "increasing" {
 			numDif = num - lastNum
 			if lastNum >= num {
-				return false
+				if hasRetry {
+					newList := RemoveItem(input, idx)
+					return abc(newList)
+				} else {
+					println("False as direction is not increasing where it should - Without retry")
+					return false
+				}
 			}
 		} else if direction == "decreasing" {
 			numDif = lastNum - num
 			if lastNum <= num {
-				return false
+				if hasRetry {
+					newList := RemoveItem(input, idx)
+					return abc(newList)
+				} else {
+					println("False as direction is not decreasing where it should - Without retry")
+					return false
+				}
 			}
 		} else {
 			panic("That was not supposed to happen...")
 		}
 
 		if numDif < 1 || numDif > 3 {
-			return false
+			if hasRetry {
+				newList := RemoveItem(input, idx)
+				println("False as numDif does not match - With retry")
+				return abc(newList)
+			} else {
+				println("False as numDif does not match - Without retry")
+				return false
+			}
 		}
 
 		lastNum = num
@@ -83,6 +172,7 @@ func LineReportIsSafe(line string) bool {
 	var safetyLevels []int
 
 	// Converting the strings to ints
+	println("Member of list: ")
 	for _, numberAsString := range safetyLevelsStrings {
 		number, err := strconv.Atoi(numberAsString)
 
@@ -91,9 +181,11 @@ func LineReportIsSafe(line string) bool {
 		}
 
 		safetyLevels = append(safetyLevels, number)
+		print(strconv.Itoa(number))
 	}
 
-	return isSafe(safetyLevels)
+	println("")
+	return isSafe(safetyLevels, true)
 }
 
 func main() {
@@ -103,10 +195,10 @@ func main() {
 
 	for _, line := range fileContent {
 		if LineReportIsSafe(line) {
+			println("Above line is safe")
 			amountOfSafeReports++
 		}
 	}
 
 	println(amountOfSafeReports)
-
 }
